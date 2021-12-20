@@ -10,11 +10,6 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            form: {
-                email: null,
-                password: null
-            },
-            error: {},
             form2: {
                 email: {
                     value: null,
@@ -36,19 +31,15 @@ class App extends Component {
                         required: 'password boş bırakılamaz'
                     }
                 },
-            },errors:{}
+            },
+            errors: {}
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange(event) {
-        console.log("here");
         var name = event.target.name,
             value = event.target.value;
-
-        /*this.setState({
-            [name]:value
-        });*/
 
         this.setState(prevState => ({
             form2: {
@@ -67,83 +58,18 @@ class App extends Component {
             ...this.state.form
         };
 
-        const {formIsValid, errors} =validate(this.state.form2);
+        const {formIsValid, errors} = validate(this.state.form2);
+
+        this.setState({
+            errors
+        });
 
         if (formIsValid) {
             axios.post("https://jsonplaceholder.typicode.com/posts/1/comments", data).then(response => {
                 console.log(response)
             });
-        }else{
-            this.setState(prevState => ({
-                errors
-              /*  form2: {
-                    ...prevState.form2,
-                    errors: errors
-                }*/
-            }));
         }
-
-        /* if (validate) {
-             axios.post("https://jsonplaceholder.typicode.com/posts/1/comments", data).then(response => {
-                 console.log(response)
-             });
-         } else {
-             //alert("validate false döndü");
-         }*/
-
-
     }
-
-
-    /*   validate(form) {
-           let formObject = this.state.form2;
-           let formIsValid = true,
-               errors = {};
-
-           for (var formElem in formObject) {
-               var elemObject = formObject[formElem],
-                   elemObjectValue = elemObject.value;
-
-               for (var rules in elemObject.rules) {
-                   let ruleBool = elemObject.rules[rules];
-
-                    if (rules === "email" && ruleBool === true) {
-                        console.log("1111=",elemObject,rules);
-
-                        const validateEmail = (email) => {
-                            return String(email)
-                                .toLowerCase()
-                                .match(
-                                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                                );
-                        };
-
-                        if(!validateEmail(elemObjectValue)){
-                            errors[formElem] = elemObject.messages[rules];
-                            formIsValid = false;
-                        }
-
-                    }
-
-                   if (rules === "required" && ruleBool === true) {
-                       console.log("222=",elemObject,rules);
-                       if (elemObjectValue === null || elemObjectValue === undefined || elemObjectValue === "") {
-                           errors[formElem] = elemObject.messages[rules];
-                           formIsValid = false;
-                       }
-                   }
-               }
-           }
-           this.setState(prevState => ({
-               form2: {
-                   ...prevState.form2,
-                   errors: errors
-               }
-           }));
-
-           return formIsValid;
-       }*/
-
 
     render() {
         return (
