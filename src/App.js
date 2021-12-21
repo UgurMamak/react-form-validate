@@ -31,6 +31,30 @@ class App extends Component {
                         required: 'password boş bırakılamaz'
                     }
                 },
+                citySelect: {
+                    value: '',
+                    rules: {
+                        required: true
+                    },
+                    messages: {
+                        required: 'şehir boş bırakılamaz'
+                    }
+                },
+                checkbox2: {
+                    value: false,
+                    rules: {
+                        required: true
+                    },
+                    messages: {
+                        required: "checkbox2 boş bırakılamaz"
+                    }
+                },
+                checkbox1: {
+                    value: false,
+                    rules: {
+                        required: true
+                    }
+                }
             },
             errors: {}
         }
@@ -39,7 +63,7 @@ class App extends Component {
 
     handleChange(event) {
         var name = event.target.name,
-            value = event.target.value;
+            value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 
         this.setState(prevState => ({
             form2: {
@@ -54,9 +78,7 @@ class App extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        var data = {
-            ...this.state.form
-        };
+        var data = {};
 
         const {formIsValid, errors} = validate(this.state.form2);
 
@@ -65,10 +87,15 @@ class App extends Component {
         });
 
         if (formIsValid) {
+            Object.keys(this.state.form2).forEach(formItem=>{
+                data[formItem]=this.state.form2[formItem]["value"]
+            });
+
             axios.post("https://jsonplaceholder.typicode.com/posts/1/comments", data).then(response => {
                 console.log(response)
             });
         }
+
     }
 
     render() {
@@ -83,6 +110,14 @@ class App extends Component {
                                           onChange={(e) => this.handleChange(e)}
                                           name="email" placeholder="Enter email"/>
                             <span style={{color: "red"}}>{this.state.errors["email"]}</span>
+                        </Form.Group>
+
+                                    <Form.Group as={Col} controlId="formGridEmail2">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control type="text" className={'required'} data-msg-required="boş bırakmayınız."
+                                          onChange={(e) => this.handleChange(e)}
+                                          name="email2" placeholder="Enter email"/>
+                            <span style={{color: "red"}}>{this.state.errors["email2"]}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formGridPassword">
@@ -111,12 +146,14 @@ class App extends Component {
 
                         <Form.Group as={Col} controlId="formGridState">
                             <Form.Label>State</Form.Label>
-                            <Form.Select defaultValue="Choose...">
+                            <Form.Select defaultValue="Choose..." name="citySelect"
+                                         onChange={(e) => this.handleChange(e)}>
                                 <option>Choose...</option>
                                 <option value="1">One</option>
                                 <option value="2">Two</option>
                                 <option value="3">Three</option>
                             </Form.Select>
+                            <span style={{color: "red"}}>{this.state.errors["citySelect"]}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} controlId="formGridZip">
@@ -125,8 +162,16 @@ class App extends Component {
                         </Form.Group>
                     </Row>
 
-                    <Form.Group className="mb-3" id="formGridCheckbox">
-                        <Form.Check type="checkbox" label="Check me out"/>
+                    <Form.Group className="mb-3" id="formGridCheckbox1">
+                        <Form.Check type="checkbox" name="checkbox1" onChange={(e)=>this.handleChange(e)} label="checkbox1"/>
+                        <span style={{color: "red"}}>{this.state.errors["checkbox1"]}</span>
+                    </Form.Group>
+
+                    <Form.Group className="mb-3" id="formGridCheckbox2">
+                        <Form.Check type="checkbox" name="checkbox2" onChange={(e) => {
+                            this.handleChange(e)
+                        }} label="checkbox2"/>
+                        <span style={{color: "red"}}>{this.state.errors["checkbox2"]}</span>
                     </Form.Group>
 
                     <Form.Group as={Row} className="mb-3">
@@ -139,6 +184,7 @@ class App extends Component {
                                 label="first radio"
                                 name="formHorizontalRadios"
                                 id="formHorizontalRadios1"
+
                             />
                             <Form.Check
                                 type="radio"
