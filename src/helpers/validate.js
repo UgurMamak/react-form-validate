@@ -1,3 +1,10 @@
+import {validateEmail} from "../validate/rules/email";
+import {validateRequired} from "../validate/rules/required";
+import {maxLength} from "../validate/rules/maxLength";
+import {equalTo} from "../validate/rules/equalTo";
+import {isNumber} from "../validate/rules/isNumber";
+import {rangeLength} from "../validate/rules/rangeLength";
+
 let errors = {};
 
 const defaultMessages = {
@@ -6,6 +13,7 @@ const defaultMessages = {
     email: "Please enter a valid email address.",
     equalTo: "Please enter the same value again.",
     maxLength: "Please enter a value less than or equal to {0}.",
+    rangeLength: "Please enter a value between {0} and {1} characters long.",
 
     remote: "Please fix this field.",
     url: "Please enter a valid URL.",
@@ -59,37 +67,23 @@ const sendMessage = (rule, elemObject, formElem) => {
     }
 };
 
-const validateEmail = (value) => {
-    return String(value)
-        .toLowerCase()
-        .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        );
+const sendMessage2 = (rule, elemObject, formElem) => {
+    if (elemObject.messages) {
+        if (elemObject.messages[rule] === null || elemObject.messages[rule] === undefined || elemObject.messages[rule] === '') {
+            errors[formElem] = defaultMessages[rule].formatUnicorn(elemObject.rules[rule]);
+        } else {
+            errors[formElem] = elemObject.messages[rule].formatUnicorn(elemObject.rules[rule]);
+        }
+    } else {
+        errors[formElem] = defaultMessages[rule].formatUnicorn(elemObject.rules[rule]);
+    }
 };
-
-const validateRequired = (value) => {
-    return value === null || value === false || value === undefined || value === "" ? false : true;
-}
-
-const maxLength = (value, length) => {
-    return value.length > length ? false : true;
-}
-
-const minLength = (value, length) => {
-    return;
-}
-
-const equalTo = (value1, value2) => {
-    return value1 === value2 ? true : false;
-}
-
-const isNumber = (value) => {
-    return isNaN(value) ? false : true;
-}
 
 export const validate = (form) => {
     let formIsValid = true;
     errors = {};
+    
+    console.log("validate=",form);
 
     Object.keys(form).forEach(formElem => {
         var elemObject = form[formElem],
@@ -124,8 +118,16 @@ export const validate = (form) => {
             if (elemObject.rules["maxLength"] && elemObjectValue !== null) {
                 if (!maxLength(elemObjectValue, elemObject.rules.maxLength)) {
                     let rule = "maxLength";
-                    sendMessage(rule, elemObject, formElem);
+                    sendMessage2(rule, elemObject, formElem);
                     formIsValid = false;
+                }
+            }
+
+            if(elemObject.rules["rangeLength"] && elemObjectValue!==null){
+                if(!rangeLength(elemObjectValue,elemObject.rules.rangeLength)){
+                    let rule="rangeLength";
+                    sendMessage2(rule, elemObject, formElem);
+                    formIsValid=false;
                 }
             }
 
@@ -137,7 +139,6 @@ export const validate = (form) => {
                     formIsValid = false;
                 }
             }
-
         }
 
     });

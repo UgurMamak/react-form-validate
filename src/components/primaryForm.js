@@ -20,25 +20,25 @@ class PrimaryForm extends Component {
                         email: 'geçersiz email adresi'
                     }
                 },
-                email2:{
-                    rules:{
-                        email:true,
-                        required:true
+                email2: {
+                    rules: {
+                        email: true,
+                        required: true
                     }
                 },
                 password: {
                     value: null,
                     rules: {
                         required: true,
-                        maxLength:8,
-                        minLength:2
+                        maxLength: 8,
+                        minLength: 2
                     },
                     messages: {
                         required: 'password boş bırakılamaz'
                     }
                 },
-                password2:{
-                    rules:{
+                password2: {
+                    rules: {
                         equalTo: 'password'
                     }
                 },
@@ -66,14 +66,20 @@ class PrimaryForm extends Component {
                         required: true
                     }
                 },
-                count:{
-                    rules:{
-                        isNumber:true
+                count: {
+                    rules: {
+                        isNumber: true
                     }
                 },
-                formHorizontalRadios:{
+                formHorizontalRadios: {
+                    rules: {
+                        required: true
+                    }
+                },
+                rangeElement:{
+                    value:null,
                     rules:{
-                        required:true
+                        rangeLength:[2,5]
                     }
                 }
             },
@@ -95,6 +101,26 @@ class PrimaryForm extends Component {
                 }
             }
         }));
+
+        /*if(event.target.getAttribute('data-validate')){
+            console.log(JSON.parse(event.target.getAttribute('data-validate')));
+            this.setState(prevState => ({
+                form2: {
+                    ...prevState.form2,
+                    [name]: JSON.parse(event.target.getAttribute('data-validate'))
+                }
+            }));
+        }else{
+            this.setState(prevState => ({
+                form2: {
+                    ...prevState.form2,
+                    [name]: {
+                        ...prevState.form2[name],
+                        value: value
+                    }
+                }
+            }));
+        }*/
     }
 
     handleSubmit(event) {
@@ -116,8 +142,8 @@ class PrimaryForm extends Component {
                 console.log(response)
             });
         }
-
     }
+
 
     render() {
         return (
@@ -156,9 +182,18 @@ class PrimaryForm extends Component {
 
                     </Row>
 
+                    <Form.Group className="mb-3" controlId="rangeElement">
+                        <Form.Label>range example</Form.Label>
+                        <Form.Control name="rangeElement"
+                                      onChange={(e) => this.handleChange(e)} placeholder=""/>
+                        <span style={{color: "red"}}>{this.state.errors["rangeElement"]}</span>
+                    </Form.Group>
+
                     <Form.Group className="mb-3" controlId="formGridAddress1">
                         <Form.Label>Address</Form.Label>
-                        <Form.Control placeholder="1234 Main St"/>
+                        <Form.Control name="address1" data-validate={'{"value":null,"rules":{"required":true}}'}
+                                      onChange={(e) => this.handleChange(e)} placeholder="1234 Main St"/>
+                        <span style={{color: "red"}}>{this.state.errors["address1"]}</span>
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formGridAddress2">
@@ -192,7 +227,7 @@ class PrimaryForm extends Component {
 
                     <Form.Group className="mb-3" controlId="count">
                         <Form.Label>Adet</Form.Label>
-                        <Form.Control name="count" onChange={(e)=>this.handleChange(e)} placeholder="Adet giriniz."/>
+                        <Form.Control name="count" onChange={(e) => this.handleChange(e)} placeholder="Adet giriniz."/>
                         <span style={{color: "red"}}>{this.state.errors["count"]}</span>
                     </Form.Group>
 
@@ -219,7 +254,7 @@ class PrimaryForm extends Component {
                                 label="first radio"
                                 name="formHorizontalRadios"
                                 id="formHorizontalRadios1"
-                                onChange={(e)=>this.handleChange(e)}
+                                onChange={(e) => this.handleChange(e)}
 
                             />
                             <Form.Check
@@ -227,14 +262,14 @@ class PrimaryForm extends Component {
                                 label="second radio"
                                 name="formHorizontalRadios"
                                 id="formHorizontalRadios2"
-                                onChange={(e)=>this.handleChange(e)}
+                                onChange={(e) => this.handleChange(e)}
                             />
                             <Form.Check
                                 type="radio"
                                 label="third radio"
                                 name="formHorizontalRadios"
                                 id="formHorizontalRadios3"
-                                onChange={(e)=>this.handleChange(e)}
+                                onChange={(e) => this.handleChange(e)}
                             />
                         </Col>
                         <span style={{color: "red"}}>{this.state.errors["formHorizontalRadios"]}</span>
