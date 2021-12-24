@@ -4,33 +4,9 @@ import {maxLength} from "../validate/rules/maxLength";
 import {equalTo} from "../validate/rules/equalTo";
 import {isNumber} from "../validate/rules/isNumber";
 import {rangeLength} from "../validate/rules/rangeLength";
+import defaultMessages from "../validate/messages/messages-en"
 
-let errors = {};
-
-const defaultMessages = {
-    required: "This field is required.",
-    isNumber: "Please enter a valid number.",
-    email: "Please enter a valid email address.",
-    equalTo: "Please enter the same value again.",
-    maxLength: "Please enter a value less than or equal to {0}.",
-    rangeLength: "Please enter a value between {0} and {1} characters long.",
-
-    remote: "Please fix this field.",
-    url: "Please enter a valid URL.",
-    date: "Please enter a valid date.",
-    dateISO: "Please enter a valid date (ISO).",
-    digits: "Please enter only digits.",
-    creditcard: "Please enter a valid credit card number.",
-    accept: "Please enter a value with a valid extension.",
-
-    /*    maxlength: jQuery.validator.format("Please enter no more than {0} characters."),
-        minlength: jQuery.validator.format("Please enter at least {0} characters."),
-        rangelength: jQuery.validator.format("Please enter a value between {0} and {1} characters long."),
-        range: jQuery.validator.format("Please enter a value between {0} and {1}."),
-        max: jQuery.validator.format("Please enter a value less than or equal to {0}."),
-        min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")*/
-};
-
+let errors = {}, formIsValid = true, formObject = {};
 
 String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
     function () {
@@ -79,11 +55,9 @@ const sendMessage2 = (rule, elemObject, formElem) => {
     }
 };
 
-export const validate = (form) => {
+/*export const validate = (form) => {
     let formIsValid = true;
     errors = {};
-    
-    console.log("validate=",form);
 
     Object.keys(form).forEach(formElem => {
         var elemObject = form[formElem],
@@ -123,11 +97,11 @@ export const validate = (form) => {
                 }
             }
 
-            if(elemObject.rules["rangeLength"] && elemObjectValue!==null){
-                if(!rangeLength(elemObjectValue,elemObject.rules.rangeLength)){
-                    let rule="rangeLength";
+            if (elemObject.rules["rangeLength"] && elemObjectValue !== null) {
+                if (!rangeLength(elemObjectValue, elemObject.rules.rangeLength)) {
+                    let rule = "rangeLength";
                     sendMessage2(rule, elemObject, formElem);
-                    formIsValid=false;
+                    formIsValid = false;
                 }
             }
 
@@ -146,5 +120,92 @@ export const validate = (form) => {
     return {
         formIsValid, errors
     }
+}*/
+
+
+export const validate = {
+
+    methods: {
+        email: function (value, elemObject, element) {
+            if (!validateEmail(value)) {
+                let rule = "email";
+                sendMessage(rule, elemObject, element);
+                formIsValid = false;
+            }
+        },
+        required: function (value, elemObject, element) {
+            if (!validateRequired(value)) {
+                let rule = "required";
+                sendMessage(rule, elemObject, element);
+                formIsValid = false;
+            }
+        },
+        isNumber: function (value, elemObject, element) {
+            if (!isNumber(value)) {
+                let rule = "isNumber";
+                sendMessage(rule, elemObject, element);
+                formIsValid = false;
+            }
+        },
+        equalTo: function (value, elemObject, element) {
+            if (!equalTo(value, formObject[elemObject.rules["equalTo"]].value)) {
+                let rule = "equalTo";
+                sendMessage(rule, elemObject, element);
+                formIsValid = false;
+            }
+        },
+        maxLength: function (value, elemObject, element) {
+            if (value !== null) {
+                if (!maxLength(value, elemObject.rules.maxLength)) {
+                    let rule = "maxLength";
+                    sendMessage2(rule, elemObject, element);
+                    formIsValid = false;
+                }
+            }
+        },
+        rangeLength: function (value, elemObject, element) {
+            if (value !== null) {
+                if (!rangeLength(value, elemObject.rules.rangeLength)) {
+                    let rule = "rangeLength";
+                    sendMessage2(rule, elemObject, element);
+                    formIsValid = false;
+                }
+            }
+        }
+    },
+
+    valid: function (form) {
+        formIsValid = true;
+        errors = {};
+        formObject = form;
+
+        Object.keys(form).forEach(formElem => {
+            var elemObject = form[formElem],
+                elemObjectValue = elemObject.value;
+            if (elemObject.rules) {
+                Object.keys(elemObject.rules).forEach(rule => {
+                    if (this.methods.hasOwnProperty(rule)) {
+                        this.methods[rule](elemObjectValue, elemObject, formElem);
+                    }
+                });
+            }
+        });
+
+        return {
+            formIsValid, errors
+        }
+    },
+
+    addMethod: function (name, method, message) {
+        validate.methods[name] = method
+        defaultMessages[name] = message
+    },
+
+    addRule:function (){
+        //addMethods burayı çağırsın burasıda methods:{} alanına ekleme yapsın parametreleri kontrol et
+    }
 }
+
+window.validate = validate;
+window.message = defaultMessages;
 

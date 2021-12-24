@@ -76,10 +76,15 @@ class PrimaryForm extends Component {
                         required: true
                     }
                 },
-                rangeElement:{
-                    value:null,
+                rangeElement: {
+                    value: null,
+                    rules: {
+                        rangeLength: [3, 8]
+                    }
+                },
+                password3:{
                     rules:{
-                        rangeLength:[2,5]
+                        passwordRegex:true
                     }
                 }
             },
@@ -127,7 +132,16 @@ class PrimaryForm extends Component {
         event.preventDefault();
         var data = {};
 
-        const {formIsValid, errors} = validate(this.state.form2);
+        var pass = 'aAaaa1aaa';
+
+        validate.addMethod("passwordRegex", function (value,de,a) {
+            console.log(value,de,a);
+            var regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/
+            return regex.test(value);
+        }, "parola kurallarına uymuyor");
+
+        const {formIsValid, errors} = validate.valid(this.state.form2);
+
 
         this.setState({
             errors
@@ -178,6 +192,13 @@ class PrimaryForm extends Component {
                             <Form.Control type="password" name="password2" onChange={(e) => this.handleChange(e)}
                                           placeholder="Password2"/>
                             <span style={{color: "red"}}>{this.state.errors["password2"]}</span>
+                        </Form.Group>
+
+                        <Form.Group as={Col} controlId="formGridPassword3">
+                            <Form.Label>Password3 (custom validate)</Form.Label>
+                            <Form.Control type="password" name="password3" onChange={(e) => this.handleChange(e)}
+                                          placeholder="Password3"/>
+                            <span style={{color: "red"}}>{this.state.errors["password3"]}</span>
                         </Form.Group>
 
                     </Row>
