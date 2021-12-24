@@ -4,10 +4,9 @@ import axios from "axios";
 import {validate} from "../helpers/validate";
 
 class PrimaryForm extends Component {
-
     constructor(props) {
         super(props);
-        this.state = {
+        this.state = {/*
             form2: {
                 email: {
                     value: null,
@@ -79,16 +78,113 @@ class PrimaryForm extends Component {
                 rangeElement: {
                     value: null,
                     rules: {
+                        required: true,
                         rangeLength: [3, 8]
                     }
                 },
-                password3:{
-                    rules:{
-                        passwordRegex:true
+                password3: {
+                    rules: {
+                        passwordRegex: true,
+                        required: true
                     }
                 }
+            },*/
+            form2: {
+                email:null,
+                email2:null,
+                password:null,
+                password2:null,
+                citySelect: null,
+                checkbox2: null,
+                checkbox1:null,
+                count: null,
+                formHorizontalRadios: null,
+                rangeElement:null,
+                password3: null
             },
-            errors: {}
+            errors: {},
+            validate: {
+                email: {
+                    value: null,
+                    rules: {
+                        required: true,
+                        email: true
+                    },
+                    messages: {
+                        required: 'email boş bırakılamaz',
+                        email: 'geçersiz email adresi'
+                    }
+                },
+                email2: {
+                    rules: {
+                        email: true,
+                        required: true
+                    }
+                },
+                password: {
+                    value: null,
+                    rules: {
+                        required: true,
+                        maxLength: 8,
+                        minLength: 2
+                    },
+                    messages: {
+                        required: 'password boş bırakılamaz'
+                    }
+                },
+                password2: {
+                    rules: {
+                        equalTo: 'password'
+                    }
+                },
+                citySelect: {
+                    value: '',
+                    rules: {
+                        required: true
+                    },
+                    messages: {
+                        required: 'şehir boş bırakılamaz'
+                    }
+                },
+                checkbox2: {
+                    value: null,
+                    rules: {
+                        required: true
+                    },
+                    messages: {
+                        required: "checkbox2 boş bırakılamaz"
+                    }
+                },
+                checkbox1: {
+                    value: null,
+                    rules: {
+                        required: true
+                    }
+                },
+                count: {
+                    rules: {
+                        isNumber: true
+                    }
+                },
+                formHorizontalRadios: {
+                    rules: {
+                        required: true
+                    }
+                },
+                rangeElement: {
+                    value: null,
+                    rules: {
+                        required: true,
+                        rangeLength: [3, 8]
+                    }
+                },
+                password3: {
+                    rules: {
+                        passwordRegex: true,
+                        required: true
+                    }
+                }
+            }
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -100,11 +196,16 @@ class PrimaryForm extends Component {
         this.setState(prevState => ({
             form2: {
                 ...prevState.form2,
+                [name]:value
+            },
+            validate: {
+                ...prevState.validate,
                 [name]: {
-                    ...prevState.form2[name],
+                    ...prevState.validate[name],
                     value: value
                 }
             }
+
         }));
 
         /*if(event.target.getAttribute('data-validate')){
@@ -132,16 +233,12 @@ class PrimaryForm extends Component {
         event.preventDefault();
         var data = {};
 
-        var pass = 'aAaaa1aaa';
-
-        validate.addMethod("passwordRegex", function (value,de,a) {
-            console.log(value,de,a);
+        validate.addMethod("passwordRegex", function (value) {
             var regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/
             return regex.test(value);
         }, "parola kurallarına uymuyor");
 
-        const {formIsValid, errors} = validate.valid(this.state.form2);
-
+        const {formIsValid, errors} = validate.valid(this.state.validate);
 
         this.setState({
             errors
@@ -158,13 +255,16 @@ class PrimaryForm extends Component {
         }
     }
 
+    handleSubmit2(event2){
+        console.log("2.form");
+    }
 
     render() {
         return (
             <Container>
                 <Form onSubmit={this.handleSubmit}>
-                    <Row className="mb-3">
-                        <Form.Group as={Col} controlId="formGridEmail">
+                    <Row className="mb-3 mt-3">
+                        <Form.Group as={Col} md={3} controlId="formGridEmail">
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="text" className={'required'} data-msg-required="boş bırakmayınız."
                                           onChange={(e) => this.handleChange(e)}
@@ -172,7 +272,7 @@ class PrimaryForm extends Component {
                             <span style={{color: "red"}}>{this.state.errors["email"]}</span>
                         </Form.Group>
 
-                        <Form.Group as={Col} controlId="formGridEmail2">
+                        <Form.Group as={Col} md={3} controlId="formGridEmail2">
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="text" className={'required'} data-msg-required="boş bırakmayınız."
                                           onChange={(e) => this.handleChange(e)}
@@ -180,55 +280,52 @@ class PrimaryForm extends Component {
                             <span style={{color: "red"}}>{this.state.errors["email2"]}</span>
                         </Form.Group>
 
-                        <Form.Group as={Col} controlId="formGridPassword">
+                        <Form.Group as={Col} md={3} controlId="formGridPassword">
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" name="password" onChange={(e) => this.handleChange(e)}
                                           placeholder="Password"/>
                             <span style={{color: "red"}}>{this.state.errors["password"]}</span>
                         </Form.Group>
 
-                        <Form.Group as={Col} controlId="formGridPassword2">
+                        <Form.Group as={Col} md={3} controlId="formGridPassword2">
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" name="password2" onChange={(e) => this.handleChange(e)}
                                           placeholder="Password2"/>
                             <span style={{color: "red"}}>{this.state.errors["password2"]}</span>
                         </Form.Group>
 
-                        <Form.Group as={Col} controlId="formGridPassword3">
+                        <Form.Group as={Col} md={3} controlId="formGridPassword3">
                             <Form.Label>Password3 (custom validate)</Form.Label>
                             <Form.Control type="password" name="password3" onChange={(e) => this.handleChange(e)}
                                           placeholder="Password3"/>
                             <span style={{color: "red"}}>{this.state.errors["password3"]}</span>
                         </Form.Group>
 
-                    </Row>
+                        <Form.Group as={Col} md={3}  controlId="rangeElement">
+                            <Form.Label>range example</Form.Label>
+                            <Form.Control name="rangeElement"
+                                          onChange={(e) => this.handleChange(e)} placeholder=""/>
+                            <span style={{color: "red"}}>{this.state.errors["rangeElement"]}</span>
+                        </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="rangeElement">
-                        <Form.Label>range example</Form.Label>
-                        <Form.Control name="rangeElement"
-                                      onChange={(e) => this.handleChange(e)} placeholder=""/>
-                        <span style={{color: "red"}}>{this.state.errors["rangeElement"]}</span>
-                    </Form.Group>
+                        <Form.Group as={Col} md={3}  controlId="formGridAddress1">
+                            <Form.Label>Address</Form.Label>
+                            <Form.Control name="address1" data-validate={'{"value":null,"rules":{"required":true}}'}
+                                          onChange={(e) => this.handleChange(e)} placeholder="1234 Main St"/>
+                            <span style={{color: "red"}}>{this.state.errors["address1"]}</span>
+                        </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="formGridAddress1">
-                        <Form.Label>Address</Form.Label>
-                        <Form.Control name="address1" data-validate={'{"value":null,"rules":{"required":true}}'}
-                                      onChange={(e) => this.handleChange(e)} placeholder="1234 Main St"/>
-                        <span style={{color: "red"}}>{this.state.errors["address1"]}</span>
-                    </Form.Group>
+                        <Form.Group as={Col} md={3}  controlId="formGridAddress2">
+                            <Form.Label>Address 2</Form.Label>
+                            <Form.Control placeholder="Apartment, studio, or floor"/>
+                        </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="formGridAddress2">
-                        <Form.Label>Address 2</Form.Label>
-                        <Form.Control placeholder="Apartment, studio, or floor"/>
-                    </Form.Group>
-
-                    <Row className="mb-3">
-                        <Form.Group as={Col} controlId="formGridCity">
+                        <Form.Group as={Col} md={3} controlId="formGridCity">
                             <Form.Label>City</Form.Label>
                             <Form.Control/>
                         </Form.Group>
 
-                        <Form.Group as={Col} controlId="formGridState">
+                        <Form.Group as={Col} md={3} controlId="formGridState">
                             <Form.Label>State</Form.Label>
                             <Form.Select defaultValue="Choose..." name="citySelect"
                                          onChange={(e) => this.handleChange(e)}>
@@ -240,65 +337,66 @@ class PrimaryForm extends Component {
                             <span style={{color: "red"}}>{this.state.errors["citySelect"]}</span>
                         </Form.Group>
 
-                        <Form.Group as={Col} controlId="formGridZip">
+                        <Form.Group as={Col} md={3} controlId="formGridZip">
                             <Form.Label>Zip</Form.Label>
                             <Form.Control/>
                         </Form.Group>
+
+                        <Form.Group as={Col} md={3} controlId="count">
+                            <Form.Label>Adet</Form.Label>
+                            <Form.Control name="count" onChange={(e) => this.handleChange(e)}
+                                          placeholder="Adet giriniz."/>
+                            <span style={{color: "red"}}>{this.state.errors["count"]}</span>
+                        </Form.Group>
+
+                        <Form.Group as={Col} md={3} id="formGridCheckbox1">
+                            <Form.Check type="checkbox" name="checkbox1" onChange={(e) => this.handleChange(e)}
+                                        label="checkbox1"/>
+                            <span style={{color: "red"}}>{this.state.errors["checkbox1"]}</span>
+                        </Form.Group>
+
+                        <Form.Group as={Col} md={3} id="formGridCheckbox2">
+                            <Form.Check type="checkbox" name="checkbox2" onChange={(e) => {
+                                this.handleChange(e)
+                            }} label="checkbox2"/>
+                            <span style={{color: "red"}}>{this.state.errors["checkbox2"]}</span>
+                        </Form.Group>
+
+                        <Form.Group as={Row} className="mb-3">
+                            <Form.Label as="legend" column sm={2}>
+                                Radios
+                            </Form.Label>
+                            <Col sm={10}>
+                                <Form.Check
+                                    type="radio"
+                                    label="first radio"
+                                    name="formHorizontalRadios"
+                                    id="formHorizontalRadios1"
+                                    onChange={(e) => this.handleChange(e)}
+
+                                />
+                                <Form.Check
+                                    type="radio"
+                                    label="second radio"
+                                    name="formHorizontalRadios"
+                                    id="formHorizontalRadios2"
+                                    onChange={(e) => this.handleChange(e)}
+                                />
+                                <Form.Check
+                                    type="radio"
+                                    label="third radio"
+                                    name="formHorizontalRadios"
+                                    id="formHorizontalRadios3"
+                                    onChange={(e) => this.handleChange(e)}
+                                />
+                            </Col>
+                            <span style={{color: "red"}}>{this.state.errors["formHorizontalRadios"]}</span>
+                        </Form.Group>
+
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
                     </Row>
-
-                    <Form.Group className="mb-3" controlId="count">
-                        <Form.Label>Adet</Form.Label>
-                        <Form.Control name="count" onChange={(e) => this.handleChange(e)} placeholder="Adet giriniz."/>
-                        <span style={{color: "red"}}>{this.state.errors["count"]}</span>
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" id="formGridCheckbox1">
-                        <Form.Check type="checkbox" name="checkbox1" onChange={(e) => this.handleChange(e)}
-                                    label="checkbox1"/>
-                        <span style={{color: "red"}}>{this.state.errors["checkbox1"]}</span>
-                    </Form.Group>
-
-                    <Form.Group className="mb-3" id="formGridCheckbox2">
-                        <Form.Check type="checkbox" name="checkbox2" onChange={(e) => {
-                            this.handleChange(e)
-                        }} label="checkbox2"/>
-                        <span style={{color: "red"}}>{this.state.errors["checkbox2"]}</span>
-                    </Form.Group>
-
-                    <Form.Group as={Row} className="mb-3">
-                        <Form.Label as="legend" column sm={2}>
-                            Radios
-                        </Form.Label>
-                        <Col sm={10}>
-                            <Form.Check
-                                type="radio"
-                                label="first radio"
-                                name="formHorizontalRadios"
-                                id="formHorizontalRadios1"
-                                onChange={(e) => this.handleChange(e)}
-
-                            />
-                            <Form.Check
-                                type="radio"
-                                label="second radio"
-                                name="formHorizontalRadios"
-                                id="formHorizontalRadios2"
-                                onChange={(e) => this.handleChange(e)}
-                            />
-                            <Form.Check
-                                type="radio"
-                                label="third radio"
-                                name="formHorizontalRadios"
-                                id="formHorizontalRadios3"
-                                onChange={(e) => this.handleChange(e)}
-                            />
-                        </Col>
-                        <span style={{color: "red"}}>{this.state.errors["formHorizontalRadios"]}</span>
-                    </Form.Group>
-
-                    <Button variant="primary" type="submit">
-                        Submit
-                    </Button>
                 </Form>
             </Container>
         );

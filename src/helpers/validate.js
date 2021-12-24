@@ -55,74 +55,6 @@ const sendMessage2 = (rule, elemObject, formElem) => {
     }
 };
 
-/*export const validate = (form) => {
-    let formIsValid = true;
-    errors = {};
-
-    Object.keys(form).forEach(formElem => {
-        var elemObject = form[formElem],
-            elemObjectValue = elemObject.value;
-
-        if (elemObject.rules) {
-
-            if (elemObject.rules["email"] === true) {
-                if (!validateEmail(elemObjectValue)) {
-                    let rule = "email";
-                    sendMessage(rule, elemObject, formElem);
-                    formIsValid = false;
-                }
-            }
-
-            if (elemObject.rules["isNumber"] === true) {
-                if (!isNumber(elemObjectValue)) {
-                    let rule = "isNumber";
-                    sendMessage(rule, elemObject, formElem);
-                    formIsValid = false;
-                }
-            }
-
-            if (elemObject.rules["equalTo"]) {
-                if (!equalTo(elemObjectValue, form[elemObject.rules["equalTo"]].value)) {
-                    let rule = "equalTo";
-                    sendMessage(rule, elemObject, formElem);
-                    formIsValid = false;
-                }
-            }
-
-            if (elemObject.rules["maxLength"] && elemObjectValue !== null) {
-                if (!maxLength(elemObjectValue, elemObject.rules.maxLength)) {
-                    let rule = "maxLength";
-                    sendMessage2(rule, elemObject, formElem);
-                    formIsValid = false;
-                }
-            }
-
-            if (elemObject.rules["rangeLength"] && elemObjectValue !== null) {
-                if (!rangeLength(elemObjectValue, elemObject.rules.rangeLength)) {
-                    let rule = "rangeLength";
-                    sendMessage2(rule, elemObject, formElem);
-                    formIsValid = false;
-                }
-            }
-
-            if (elemObject.rules["required"] === true) {
-                console.log(formElem);
-                if (!validateRequired(elemObjectValue)) {
-                    let rule = "required";
-                    sendMessage(rule, elemObject, formElem);
-                    formIsValid = false;
-                }
-            }
-        }
-
-    });
-
-    return {
-        formIsValid, errors
-    }
-}*/
-
-
 export const validate = {
 
     methods: {
@@ -197,12 +129,20 @@ export const validate = {
     },
 
     addMethod: function (name, method, message) {
-        validate.methods[name] = method
         defaultMessages[name] = message
+        this.addRule(name, method);
     },
 
-    addRule:function (){
-        //addMethods burayı çağırsın burasıda methods:{} alanına ekleme yapsın parametreleri kontrol et
+    addRule: function (name, method) {
+        validate.methods[name] = function (value, elemObject, element) {
+            console.log(value, elemObject, element);
+            method();
+            if (!method(value)) {
+                let rule = name;
+                sendMessage(rule, elemObject, element);
+                formIsValid = false;
+            }
+        };
     }
 }
 
