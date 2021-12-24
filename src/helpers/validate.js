@@ -143,7 +143,19 @@ export const validate = {
                 formIsValid = false;
             }
         };
+    },
+
+
+    addWithAttr: function (form) {
+        console.log("addWithAttr=", form);
+
+        var elementList = document.querySelectorAll('[data-validate]');
+        elementList.forEach((item) => {
+            form.state.validate[item.name] = JSON.parse(item.getAttribute('data-validate'))
+        });
+
     }
+
 }
 
 window.validate = validate;

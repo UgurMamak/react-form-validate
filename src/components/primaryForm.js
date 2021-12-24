@@ -90,16 +90,16 @@ class PrimaryForm extends Component {
                 }
             },*/
             form2: {
-                email:null,
-                email2:null,
-                password:null,
-                password2:null,
+                email: null,
+                email2: null,
+                password: null,
+                password2: null,
                 citySelect: null,
                 checkbox2: null,
-                checkbox1:null,
+                checkbox1: null,
                 count: null,
                 formHorizontalRadios: null,
-                rangeElement:null,
+                rangeElement: null,
                 password3: null
             },
             errors: {},
@@ -192,11 +192,10 @@ class PrimaryForm extends Component {
     handleChange(event) {
         var name = event.target.name,
             value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-
         this.setState(prevState => ({
             form2: {
                 ...prevState.form2,
-                [name]:value
+                [name]: value
             },
             validate: {
                 ...prevState.validate,
@@ -207,26 +206,6 @@ class PrimaryForm extends Component {
             }
 
         }));
-
-        /*if(event.target.getAttribute('data-validate')){
-            console.log(JSON.parse(event.target.getAttribute('data-validate')));
-            this.setState(prevState => ({
-                form2: {
-                    ...prevState.form2,
-                    [name]: JSON.parse(event.target.getAttribute('data-validate'))
-                }
-            }));
-        }else{
-            this.setState(prevState => ({
-                form2: {
-                    ...prevState.form2,
-                    [name]: {
-                        ...prevState.form2[name],
-                        value: value
-                    }
-                }
-            }));
-        }*/
     }
 
     handleSubmit(event) {
@@ -255,8 +234,12 @@ class PrimaryForm extends Component {
         }
     }
 
-    handleSubmit2(event2){
+    handleSubmit2(event2) {
         console.log("2.form");
+    }
+
+    componentDidMount() {
+        validate.addWithAttr(this);
     }
 
     render() {
@@ -301,23 +284,40 @@ class PrimaryForm extends Component {
                             <span style={{color: "red"}}>{this.state.errors["password3"]}</span>
                         </Form.Group>
 
-                        <Form.Group as={Col} md={3}  controlId="rangeElement">
+                        <Form.Group as={Col} md={3} controlId="rangeElement">
                             <Form.Label>range example</Form.Label>
                             <Form.Control name="rangeElement"
                                           onChange={(e) => this.handleChange(e)} placeholder=""/>
                             <span style={{color: "red"}}>{this.state.errors["rangeElement"]}</span>
                         </Form.Group>
 
-                        <Form.Group as={Col} md={3}  controlId="formGridAddress1">
+                        <Form.Group as={Col} md={3} controlId="formGridAddress1">
                             <Form.Label>Address</Form.Label>
-                            <Form.Control name="address1" data-validate={'{"value":null,"rules":{"required":true}}'}
+                            <Form.Control name="address1" data-validate={JSON.stringify({
+                                value: null,
+                                rules: {
+                                    required: true
+                                },
+                                messages: {
+                                    required: "test"
+                                }
+                            })}
                                           onChange={(e) => this.handleChange(e)} placeholder="1234 Main St"/>
                             <span style={{color: "red"}}>{this.state.errors["address1"]}</span>
                         </Form.Group>
 
-                        <Form.Group as={Col} md={3}  controlId="formGridAddress2">
+                        <Form.Group as={Col} md={3} controlId="formGridAddress2">
                             <Form.Label>Address 2</Form.Label>
-                            <Form.Control placeholder="Apartment, studio, or floor"/>
+                            <Form.Control name="address2" data-validate={JSON.stringify({
+                                value: null,
+                                rules: {
+                                    required: true
+                                },
+                                messages: {
+                                    required: "test2"
+                                }
+                            })} placeholder="Apartment, studio, or floor"/>
+                            <span style={{color: "red"}}>{this.state.errors["address2"]}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="formGridCity">
