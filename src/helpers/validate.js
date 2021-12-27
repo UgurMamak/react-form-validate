@@ -8,9 +8,8 @@ import rangeLength from "../validate/rules/rangeLength";
 import minLength from "../validate/rules/minLength";
 
 let formIsValid = true, validateObject = {}, formData = {}
-,defaultMessages=messages('en');
-
-
+    , defaultMessages = messages('en'),
+    customMessages = {};
 
 String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
     function () {
@@ -31,62 +30,6 @@ String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
         return str;
     };
 
-//1
-/*const sendMessage = (rule, elementRules, formElem) => {
-    if (elementRules.messages) {
-        if (elementRules.messages[rule] === null || elementRules.messages[rule] === undefined || elementRules.messages[rule] === '') {
-            if (rule === "maxLength") {
-                //errors[formElem] = defaultMessages[rule].formatUnicorn(elementRules.rules[rule]);
-                validateObject[formElem] = {
-                    ...validateObject[formElem],
-                    error: defaultMessages[rule].formatUnicorn(elementRules.rules[rule])
-                };
-            } else {
-                //errors[formElem] = defaultMessages[rule];
-                validateObject[formElem] = {
-                    ...validateObject[formElem],
-                    error: defaultMessages[rule]
-                };
-            }
-        } else {
-            validateObject[formElem] = {
-                ...validateObject[formElem],
-                error: elementRules.messages[rule]
-            };
-        }
-    } else {
-        //errors[formElem] = defaultMessages[rule];
-        validateObject[formElem] = {
-            ...validateObject[formElem],
-            error: defaultMessages[rule]
-        };
-    }
-};*/
-
-//2
-/*const sendMessage = (rule, elementRules, formElem) => {
-    if (elementRules.messages) {
-        if (elementRules.messages[rule] === null || elementRules.messages[rule] === undefined || elementRules.messages[rule] === '') {
-            //errors[formElem] = defaultMessages[rule].formatUnicorn(elementRules.rules[rule]);
-            validateObject[formElem] = {
-                ...validateObject[formElem],
-                error: defaultMessages[rule].formatUnicorn(elementRules.rules[rule])
-            };
-        } else {
-            //errors[formElem] = elementRules.messages[rule].formatUnicorn(elementRules.rules[rule]);
-            validateObject[formElem] = {
-                ...validateObject[formElem],
-                error: elementRules.messages[rule].formatUnicorn(elementRules.rules[rule])
-            };
-        }
-    } else {
-        //errors[formElem] = defaultMessages[rule].formatUnicorn(elementRules.rules[rule]);
-        validateObject[formElem] = {
-            ...validateObject[formElem],
-            error: defaultMessages[rule].formatUnicorn(elementRules.rules[rule])
-        };
-    }
-};*/
 
 const sendMessage = (rule, elementRules, elementName) => {
     if (validateObject.messages) {
@@ -127,7 +70,7 @@ export const validate = {
             }
         },
         equalTo: function (value, elementRules, element) {
-            ;
+            console.log(value, formData, formData[elementRules["equalTo"]], elementRules["equalTo"]);
             if (!equalTo(value, formData[elementRules["equalTo"]])) {
                 let rule = "equalTo";
                 sendMessage(rule, elementRules, element);
@@ -170,12 +113,17 @@ export const validate = {
         }
     },
 
-    valid: function (validateObj, formData) {
+    valid: function (validateObj, formDataObj) {
         formIsValid = true;
         validateObject = validateObj;
-        formData = formData;
+        formData = formDataObj;
 
-        defaultMessages=messages(validateObject.lang);
+        defaultMessages = messages(validateObject.lang);
+
+        defaultMessages = {
+            ...defaultMessages,
+            ...customMessages
+        }
 
         Object.keys(validateObj.rules).forEach(elementName => {
             var elementRules = validateObject.rules[elementName],
@@ -196,8 +144,10 @@ export const validate = {
     },
 
     addMethod: function (name, method, message) {
-        console.log(defaultMessages);
-        defaultMessages[name] = message
+        defaultMessages[name] = message;
+        customMessages = {
+            [name]: message
+        };
         this.addRule(name, method);
     },
 
@@ -229,222 +179,6 @@ export const validate = {
         });
     }
 }
-
-//2
-/*export const validate = {
-
-    methods: {
-        email: function (value, elementRules, element) {
-            if (!validateEmail(value)) {
-                let rule = "email";
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        },
-        isNumber: function (value, elementRules, element) {
-            if (!isNumber(value)) {
-                let rule = "isNumber";
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        },
-        equalTo: function (value, elementRules, element) {
-            if (!equalTo(value, validateObject[elementRules.rules["equalTo"]].value)) {
-                let rule = "equalTo";
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        },
-        maxLength: function (value, elementRules, element) {
-            if (value) {
-                if (!maxLength(value, elementRules.rules.maxLength)) {
-                    let rule = "maxLength";
-                    sendMessage(rule, elementRules, element);
-                    formIsValid = false;
-                }
-            }
-        },
-        rangeLength: function (value, elementRules, element) {
-            if (value) {
-                if (!rangeLength(value, elementRules.rules.rangeLength)) {
-                    let rule = "rangeLength";
-                    sendMessage(rule, elementRules, element);
-                    formIsValid = false;
-                }
-            }
-        },
-        required: function (value, elementRules, element) {
-            if (!validateRequired(value)) {
-                let rule = "required";
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        },
-        minLength: function (value, elementRules, element) {
-            if (value) {
-                console.log("girdi=", value);
-
-                if (!minLength(value, elementRules.rules.minLength)) {
-                    let rule = "minLength";
-                    sendMessage(rule, elementRules, element);
-                    formIsValid = false;
-                }
-            }
-        }
-    },
-
-    valid: function (form, formData) {
-        formIsValid = true;
-        validateObject = form;
-
-        Object.keys(form).forEach(formElem => {
-            var elementRules = form[formElem],
-                elementRulesValue = formData[formElem];
-            elementRules.error = "";
-
-            if (elementRules.rules) {
-                Object.keys(elementRules.rules).forEach(rule => {
-                    if (this.methods.hasOwnProperty(rule)) {
-                        this.methods[rule](elementRulesValue, elementRules, formElem);
-                    }
-                });
-            }
-        });
-
-        return {
-            formIsValid, validateObject
-        }
-    },
-
-    addMethod: function (name, method, message) {
-        defaultMessages[name] = message
-        this.addRule(name, method);
-    },
-
-    addRule: function (name, method) {
-        validate.methods[name] = function (value, elementRules, element) {
-            console.log(value, elementRules, element);
-            method();
-            if (!method(value)) {
-                let rule = name;
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        };
-    },
-
-    addWithAttr: function (validateObject) {
-        var elementList = document.querySelectorAll('[data-validate]');
-        if (!elementList.length) return;
-        elementList.forEach((item) => {
-            validateObject[item.name] = JSON.parse(item.getAttribute('data-validate'))
-        });
-    }
-
-}*/
-
-
-//1
-/*export const validate = {
-
-    methods: {
-        email: function (value, elementRules, element) {
-            if (!validateEmail(value)) {
-                let rule = "email";
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        },
-        isNumber: function (value, elementRules, element) {
-            if (!isNumber(value)) {
-                let rule = "isNumber";
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        },
-        equalTo: function (value, elementRules, element) {
-            if (!equalTo(value, validateObject[elementRules.rules["equalTo"]].value)) {
-                let rule = "equalTo";
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        },
-        maxLength: function (value, elementRules, element) {
-            if (value !== null) {
-                if (!maxLength(value, elementRules.rules.maxLength)) {
-                    let rule = "maxLength";
-                    sendMessage2(rule, elementRules, element);
-                    formIsValid = false;
-                }
-            }
-        },
-        rangeLength: function (value, elementRules, element) {
-            if (value !== null) {
-                if (!rangeLength(value, elementRules.rules.rangeLength)) {
-                    let rule = "rangeLength";
-                    sendMessage2(rule, elementRules, element);
-                    formIsValid = false;
-                }
-            }
-        },
-        required: function (value, elementRules, element) {
-            if (!validateRequired(value)) {
-                let rule = "required";
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        },
-    },
-
-    valid: function (form) {
-        formIsValid = true;
-        errors = {};
-        validateObject = form;
-
-        Object.keys(form).forEach(formElem => {
-            var elementRules = form[formElem],
-                elementRulesValue = elementRules.value;
-            elementRules.error = "";
-            if (elementRules.rules) {
-                Object.keys(elementRules.rules).forEach(rule => {
-                    if (this.methods.hasOwnProperty(rule)) {
-                        this.methods[rule](elementRulesValue, elementRules, formElem);
-                    }
-                });
-            }
-        });
-
-        return {
-            formIsValid, errors, validateObject
-        }
-    },
-
-    addMethod: function (name, method, message) {
-        defaultMessages[name] = message
-        this.addRule(name, method);
-    },
-
-    addRule: function (name, method) {
-        validate.methods[name] = function (value, elementRules, element) {
-            console.log(value, elementRules, element);
-            method();
-            if (!method(value)) {
-                let rule = name;
-                sendMessage(rule, elementRules, element);
-                formIsValid = false;
-            }
-        };
-    },
-
-    addWithAttr: function (validateObject) {
-        var elementList = document.querySelectorAll('[data-validate]');
-        if(!elementList.length)return;
-        elementList.forEach((item) => {
-            validateObject[item.name] = JSON.parse(item.getAttribute('data-validate'))
-        });
-    }
-
-}*/
 
 window.validate = validate;
 window.message = defaultMessages;

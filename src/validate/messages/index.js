@@ -3,6 +3,7 @@ import {messagesTr} from "./messages-tr";
 
 
 export const messages = (code) => {
+    console.log("lang=",code);
     switch (code) {
         case 'en':
           return   messagesEn;
