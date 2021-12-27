@@ -22,6 +22,91 @@ class PrimaryForm extends Component {
             },
             validate: {
                 email: {
+
+                    rules: {
+                        email: true,
+                        required: true
+                    },
+                    messages: {
+                        required: 'email boş bırakılamaz',
+                        email: 'geçersiz email adresi {0}'
+                    },
+                },
+                email2: {
+                    rules: {
+                        email: true,
+                        required: true
+                    }
+                },
+                password: {
+
+                    rules: {
+                        required: true,
+                        maxLength: 8
+                    },
+                    messages: {
+                        required: 'password boş bırakılamaz'
+                    }
+                },
+                password2: {
+                    rules: {
+                        equalTo: 'password',
+                        minLength: 2,
+                        required: true
+                    },
+                    messages: {
+                        minLength: 'minimum {0} karakter girebilirsiniz'
+                    }
+                },
+                citySelect: {
+
+                    rules: {
+                        required: true
+                    },
+                    messages: {
+                        required: 'şehir boş bırakılamaz'
+                    }
+                },
+                checkbox2: {
+
+                    rules: {
+                        required: true
+                    },
+                    messages: {
+                        required: "checkbox2 boş bırakılamaz"
+                    }
+                },
+                checkbox1: {
+                    rules: {
+                        required: true
+                    }
+                },
+                count: {
+                    rules: {
+                        isNumber: true
+                    }
+                },
+                formHorizontalRadios: {
+                    rules: {
+                        required: true
+                    }
+                },
+                rangeElement: {
+
+                    rules: {
+                        required: true,
+                        rangeLength: [3, 8]
+                    }
+                },
+                password3: {
+                    rules: {
+                        passwordRegex: true,
+                        required: true
+                    }
+                }
+            }
+            /*validate: {
+                email: {
                     value: null,
                     rules: {
                         email: true,
@@ -29,7 +114,7 @@ class PrimaryForm extends Component {
                     },
                     messages: {
                         required: 'email boş bırakılamaz',
-                        email: 'geçersiz email adresi'
+                        email: 'geçersiz email adresi {0}'
                     },
                 },
                 email2: {
@@ -42,8 +127,7 @@ class PrimaryForm extends Component {
                     value: null,
                     rules: {
                         required: true,
-                        maxLength: 8,
-                        minLength: 2
+                        maxLength: 8
                     },
                     messages: {
                         required: 'password boş bırakılamaz'
@@ -51,7 +135,12 @@ class PrimaryForm extends Component {
                 },
                 password2: {
                     rules: {
-                        equalTo: 'password'
+                        equalTo: 'password',
+                        minLength: 2,
+                        required:true
+                    },
+                    messages: {
+                        minLength: 'minimum {0} karakter girebilirsiniz'
                     }
                 },
                 citySelect: {
@@ -101,7 +190,8 @@ class PrimaryForm extends Component {
                         required: true
                     }
                 }
-            }
+            }*/
+
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -110,19 +200,28 @@ class PrimaryForm extends Component {
         var name = event.target.name,
             value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 
+
         this.setState(prevState => ({
             form2: {
                 ...prevState.form2,
                 [name]: value
-            },
-            validate: {
-                ...prevState.validate,
-                [name]: {
-                    ...prevState.validate[name],
-                    value: value
-                }
             }
         }));
+
+
+        /* this.setState(prevState => ({
+             form2: {
+                 ...prevState.form2,
+                 [name]: value
+             },
+             validate: {
+                 ...prevState.validate,
+                 [name]: {
+                     ...prevState.validate[name],
+                     value: value
+                 }
+             }
+         }));*/
 
     }
 
@@ -130,15 +229,10 @@ class PrimaryForm extends Component {
         event.preventDefault();
         var data = {};
 
-        validate.addMethod("passwordRegex", function (value) {
-            var regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/
-            return regex.test(value);
-        }, "parola kurallarına uymuyor");
-
-        const {formIsValid, errors, formObject} = validate.valid(this.state.validate);
+        const {formIsValid, validateObject} = validate.valid(this.state.validate, this.state.form2);
 
         this.setState({
-            validate: formObject
+            validate: validateObject
         });
 
         if (formIsValid) {
@@ -157,7 +251,11 @@ class PrimaryForm extends Component {
     }
 
     componentDidMount() {
-        validate.addWithAttr(this.state.validate);
+        validate.addMethod("passwordRegex", function (value) {
+            var regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^\w\s]).{8,}$/
+            return regex.test(value);
+        }, "parola kurallarına uymuyor");
+        validate.addWithAttr(this.state.validate, this.state.form2);
     }
 
     render() {
@@ -212,7 +310,6 @@ class PrimaryForm extends Component {
                         <Form.Group as={Col} md={3} controlId="formGridAddress1">
                             <Form.Label>Address</Form.Label>
                             <Form.Control name="address1" data-validate={JSON.stringify({
-                                value: null,
                                 rules: {
                                     required: true
                                 },
@@ -231,7 +328,6 @@ class PrimaryForm extends Component {
                         <Form.Group as={Col} md={3} controlId="formGridAddress2">
                             <Form.Label>Address 2</Form.Label>
                             <Form.Control name="address2" data-validate={JSON.stringify({
-                                value: null,
                                 rules: {
                                     required: true
                                 },

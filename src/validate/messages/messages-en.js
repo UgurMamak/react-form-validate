@@ -4,6 +4,7 @@ export default {
     email: "Please enter a valid email address.",
     equalTo: "Please enter the same value again.",
     maxLength: "Please enter a value less than or equal to {0}.",
+    minLength: "Please enter at least {0} characters.",
     rangeLength: "Please enter a value between {0} and {1} characters long.",
 
     remote: "Please fix this field.",
