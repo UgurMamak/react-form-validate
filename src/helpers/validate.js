@@ -1,14 +1,13 @@
 import defaultMessages from "../validate/messages/messages-en"
-import {validateEmail} from "../validate/rules/email";
-import {validateRequired} from "../validate/rules/required";
-import {maxLength} from "../validate/rules/maxLength";
-import {equalTo} from "../validate/rules/equalTo";
-import {isNumber} from "../validate/rules/isNumber";
-import {rangeLength} from "../validate/rules/rangeLength";
-import {minLength} from "../validate/rules/minLength";
+import validateEmail from "../validate/rules/email";
+import validateRequired from "../validate/rules/required";
+import maxLength from "../validate/rules/maxLength";
+import equalTo from "../validate/rules/equalTo";
+import isNumber from "../validate/rules/isNumber";
+import rangeLength from "../validate/rules/rangeLength";
+import minLength from "../validate/rules/minLength";
 
-
-let formIsValid = true, validateObject = {};
+let formIsValid = true, validateObject = {}, formData = {};
 
 String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
     function () {
@@ -29,14 +28,15 @@ String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
         return str;
     };
 
-/*const sendMessage = (rule, elemObject, formElem) => {
-    if (elemObject.messages) {
-        if (elemObject.messages[rule] === null || elemObject.messages[rule] === undefined || elemObject.messages[rule] === '') {
+//1
+/*const sendMessage = (rule, elementRules, formElem) => {
+    if (elementRules.messages) {
+        if (elementRules.messages[rule] === null || elementRules.messages[rule] === undefined || elementRules.messages[rule] === '') {
             if (rule === "maxLength") {
-                //errors[formElem] = defaultMessages[rule].formatUnicorn(elemObject.rules[rule]);
+                //errors[formElem] = defaultMessages[rule].formatUnicorn(elementRules.rules[rule]);
                 validateObject[formElem] = {
                     ...validateObject[formElem],
-                    error: defaultMessages[rule].formatUnicorn(elemObject.rules[rule])
+                    error: defaultMessages[rule].formatUnicorn(elementRules.rules[rule])
                 };
             } else {
                 //errors[formElem] = defaultMessages[rule];
@@ -48,7 +48,7 @@ String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
         } else {
             validateObject[formElem] = {
                 ...validateObject[formElem],
-                error: elemObject.messages[rule]
+                error: elementRules.messages[rule]
             };
         }
     } else {
@@ -60,26 +60,49 @@ String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
     }
 };*/
 
-const sendMessage = (rule, elemObject, formElem) => {
-    if (elemObject.messages) {
-        if (elemObject.messages[rule] === null || elemObject.messages[rule] === undefined || elemObject.messages[rule] === '') {
-            //errors[formElem] = defaultMessages[rule].formatUnicorn(elemObject.rules[rule]);
+//2
+/*const sendMessage = (rule, elementRules, formElem) => {
+    if (elementRules.messages) {
+        if (elementRules.messages[rule] === null || elementRules.messages[rule] === undefined || elementRules.messages[rule] === '') {
+            //errors[formElem] = defaultMessages[rule].formatUnicorn(elementRules.rules[rule]);
             validateObject[formElem] = {
                 ...validateObject[formElem],
-                error: defaultMessages[rule].formatUnicorn(elemObject.rules[rule])
+                error: defaultMessages[rule].formatUnicorn(elementRules.rules[rule])
             };
         } else {
-            //errors[formElem] = elemObject.messages[rule].formatUnicorn(elemObject.rules[rule]);
+            //errors[formElem] = elementRules.messages[rule].formatUnicorn(elementRules.rules[rule]);
             validateObject[formElem] = {
                 ...validateObject[formElem],
-                error: elemObject.messages[rule].formatUnicorn(elemObject.rules[rule])
+                error: elementRules.messages[rule].formatUnicorn(elementRules.rules[rule])
             };
         }
     } else {
-        //errors[formElem] = defaultMessages[rule].formatUnicorn(elemObject.rules[rule]);
+        //errors[formElem] = defaultMessages[rule].formatUnicorn(elementRules.rules[rule]);
         validateObject[formElem] = {
             ...validateObject[formElem],
-            error: defaultMessages[rule].formatUnicorn(elemObject.rules[rule])
+            error: defaultMessages[rule].formatUnicorn(elementRules.rules[rule])
+        };
+    }
+};*/
+
+
+const sendMessage = (rule, elementRules, elementName) => {
+    if (validateObject.messages) {
+        if (validateObject.messages[elementName][rule] === null || validateObject.messages[elementName][rule] === undefined || validateObject.messages[elementName][rule] === '') {
+            validateObject.error = {
+                ...validateObject.error,
+                [elementName]: defaultMessages[rule].formatUnicorn(elementRules[rule])
+            };
+        } else {
+            validateObject.error = {
+                ...validateObject.error,
+                [elementName]: validateObject.messages[elementName][rule].formatUnicorn(elementRules[rule])
+            };
+        }
+    } else {
+        validateObject.error = {
+            ...validateObject.error,
+            [elementName]: defaultMessages[rule].formatUnicorn(elementRules[rule])
         };
     }
 };
@@ -87,59 +110,178 @@ const sendMessage = (rule, elemObject, formElem) => {
 export const validate = {
 
     methods: {
-        email: function (value, elemObject, element) {
+        email: function (value, elementRules, element) {
             if (!validateEmail(value)) {
                 let rule = "email";
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         },
-        isNumber: function (value, elemObject, element) {
+        isNumber: function (value, elementRules, element) {
             if (!isNumber(value)) {
                 let rule = "isNumber";
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         },
-        equalTo: function (value, elemObject, element) {
-            if (!equalTo(value, validateObject[elemObject.rules["equalTo"]].value)) {
+        equalTo: function (value, elementRules, element) {
+            ;
+            if (!equalTo(value, formData[elementRules["equalTo"]])) {
                 let rule = "equalTo";
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         },
-        maxLength: function (value, elemObject, element) {
+        maxLength: function (value, elementRules, element) {
             if (value) {
-                if (!maxLength(value, elemObject.rules.maxLength)) {
+                if (!maxLength(value, elementRules.maxLength)) {
                     let rule = "maxLength";
-                    sendMessage(rule, elemObject, element);
+                    sendMessage(rule, elementRules, element);
                     formIsValid = false;
                 }
             }
         },
-        rangeLength: function (value, elemObject, element) {
+        rangeLength: function (value, elementRules, element) {
             if (value) {
-                if (!rangeLength(value, elemObject.rules.rangeLength)) {
+                if (!rangeLength(value, elementRules.rangeLength)) {
                     let rule = "rangeLength";
-                    sendMessage(rule, elemObject, element);
+                    sendMessage(rule, elementRules, element);
                     formIsValid = false;
                 }
             }
         },
-        required: function (value, elemObject, element) {
+        required: function (value, elementRules, element) {
             if (!validateRequired(value)) {
                 let rule = "required";
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         },
-        minLength: function (value, elemObject, element) {
+        minLength: function (value, elementRules, element) {
+            if (value) {
+                if (!minLength(value, elementRules.minLength)) {
+                    let rule = "minLength";
+                    sendMessage(rule, elementRules, element);
+                    formIsValid = false;
+                }
+            }
+        }
+    },
+
+    valid: function (validateObj, formData) {
+        formIsValid = true;
+        validateObject = validateObj;
+        formData = formData;
+
+        Object.keys(validateObj.rules).forEach(elementName => {
+            var elementRules = validateObject.rules[elementName],
+                elementValue = formData[elementName];
+            validateObject.error[elementName] = '';
+
+            Object.keys(elementRules).forEach(rule => {
+                if (this.methods.hasOwnProperty(rule)) {
+                    this.methods[rule](elementValue, elementRules, elementName);
+                }
+            });
+
+        });
+
+        return {
+            formIsValid, validateObject
+        }
+    },
+
+    addMethod: function (name, method, message) {
+        defaultMessages[name] = message
+        this.addRule(name, method);
+    },
+
+    addRule: function (name, method) {
+        validate.methods[name] = function (value, elementRules, elementName) {
+            method();
+            if (!method(value)) {
+                let rule = name;
+                sendMessage(rule, elementRules, elementName);
+                formIsValid = false;
+            }
+        };
+    },
+
+    addWithAttr: function (validateObject) {
+        var elementList = document.querySelectorAll('[data-validate]');
+        if (!elementList.length) return;
+
+        elementList.forEach((item) => {
+            let obj = JSON.parse(item.getAttribute('data-validate'));
+            validateObject.rules = {
+                ...validateObject.rules,
+                [item.name]: obj.rules
+            };
+            validateObject.messages = {
+                ...validateObject.messages,
+                [item.name]: obj.messages
+            }
+        });
+    }
+}
+
+//2
+/*export const validate = {
+
+    methods: {
+        email: function (value, elementRules, element) {
+            if (!validateEmail(value)) {
+                let rule = "email";
+                sendMessage(rule, elementRules, element);
+                formIsValid = false;
+            }
+        },
+        isNumber: function (value, elementRules, element) {
+            if (!isNumber(value)) {
+                let rule = "isNumber";
+                sendMessage(rule, elementRules, element);
+                formIsValid = false;
+            }
+        },
+        equalTo: function (value, elementRules, element) {
+            if (!equalTo(value, validateObject[elementRules.rules["equalTo"]].value)) {
+                let rule = "equalTo";
+                sendMessage(rule, elementRules, element);
+                formIsValid = false;
+            }
+        },
+        maxLength: function (value, elementRules, element) {
+            if (value) {
+                if (!maxLength(value, elementRules.rules.maxLength)) {
+                    let rule = "maxLength";
+                    sendMessage(rule, elementRules, element);
+                    formIsValid = false;
+                }
+            }
+        },
+        rangeLength: function (value, elementRules, element) {
+            if (value) {
+                if (!rangeLength(value, elementRules.rules.rangeLength)) {
+                    let rule = "rangeLength";
+                    sendMessage(rule, elementRules, element);
+                    formIsValid = false;
+                }
+            }
+        },
+        required: function (value, elementRules, element) {
+            if (!validateRequired(value)) {
+                let rule = "required";
+                sendMessage(rule, elementRules, element);
+                formIsValid = false;
+            }
+        },
+        minLength: function (value, elementRules, element) {
             if (value) {
                 console.log("girdi=", value);
 
-                if (!minLength(value, elemObject.rules.minLength)) {
+                if (!minLength(value, elementRules.rules.minLength)) {
                     let rule = "minLength";
-                    sendMessage(rule, elemObject, element);
+                    sendMessage(rule, elementRules, element);
                     formIsValid = false;
                 }
             }
@@ -151,14 +293,14 @@ export const validate = {
         validateObject = form;
 
         Object.keys(form).forEach(formElem => {
-            var elemObject = form[formElem],
-                elemObjectValue = formData[formElem];
-            elemObject.error = "";
+            var elementRules = form[formElem],
+                elementRulesValue = formData[formElem];
+            elementRules.error = "";
 
-            if (elemObject.rules) {
-                Object.keys(elemObject.rules).forEach(rule => {
+            if (elementRules.rules) {
+                Object.keys(elementRules.rules).forEach(rule => {
                     if (this.methods.hasOwnProperty(rule)) {
-                        this.methods[rule](elemObjectValue, elemObject, formElem);
+                        this.methods[rule](elementRulesValue, elementRules, formElem);
                     }
                 });
             }
@@ -175,12 +317,12 @@ export const validate = {
     },
 
     addRule: function (name, method) {
-        validate.methods[name] = function (value, elemObject, element) {
-            console.log(value, elemObject, element);
+        validate.methods[name] = function (value, elementRules, element) {
+            console.log(value, elementRules, element);
             method();
             if (!method(value)) {
                 let rule = name;
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         };
@@ -194,54 +336,56 @@ export const validate = {
         });
     }
 
-}
+}*/
 
+
+//1
 /*export const validate = {
 
     methods: {
-        email: function (value, elemObject, element) {
+        email: function (value, elementRules, element) {
             if (!validateEmail(value)) {
                 let rule = "email";
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         },
-        isNumber: function (value, elemObject, element) {
+        isNumber: function (value, elementRules, element) {
             if (!isNumber(value)) {
                 let rule = "isNumber";
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         },
-        equalTo: function (value, elemObject, element) {
-            if (!equalTo(value, validateObject[elemObject.rules["equalTo"]].value)) {
+        equalTo: function (value, elementRules, element) {
+            if (!equalTo(value, validateObject[elementRules.rules["equalTo"]].value)) {
                 let rule = "equalTo";
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         },
-        maxLength: function (value, elemObject, element) {
+        maxLength: function (value, elementRules, element) {
             if (value !== null) {
-                if (!maxLength(value, elemObject.rules.maxLength)) {
+                if (!maxLength(value, elementRules.rules.maxLength)) {
                     let rule = "maxLength";
-                    sendMessage2(rule, elemObject, element);
+                    sendMessage2(rule, elementRules, element);
                     formIsValid = false;
                 }
             }
         },
-        rangeLength: function (value, elemObject, element) {
+        rangeLength: function (value, elementRules, element) {
             if (value !== null) {
-                if (!rangeLength(value, elemObject.rules.rangeLength)) {
+                if (!rangeLength(value, elementRules.rules.rangeLength)) {
                     let rule = "rangeLength";
-                    sendMessage2(rule, elemObject, element);
+                    sendMessage2(rule, elementRules, element);
                     formIsValid = false;
                 }
             }
         },
-        required: function (value, elemObject, element) {
+        required: function (value, elementRules, element) {
             if (!validateRequired(value)) {
                 let rule = "required";
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         },
@@ -253,13 +397,13 @@ export const validate = {
         validateObject = form;
 
         Object.keys(form).forEach(formElem => {
-            var elemObject = form[formElem],
-                elemObjectValue = elemObject.value;
-            elemObject.error = "";
-            if (elemObject.rules) {
-                Object.keys(elemObject.rules).forEach(rule => {
+            var elementRules = form[formElem],
+                elementRulesValue = elementRules.value;
+            elementRules.error = "";
+            if (elementRules.rules) {
+                Object.keys(elementRules.rules).forEach(rule => {
                     if (this.methods.hasOwnProperty(rule)) {
-                        this.methods[rule](elemObjectValue, elemObject, formElem);
+                        this.methods[rule](elementRulesValue, elementRules, formElem);
                     }
                 });
             }
@@ -276,12 +420,12 @@ export const validate = {
     },
 
     addRule: function (name, method) {
-        validate.methods[name] = function (value, elemObject, element) {
-            console.log(value, elemObject, element);
+        validate.methods[name] = function (value, elementRules, element) {
+            console.log(value, elementRules, element);
             method();
             if (!method(value)) {
                 let rule = name;
-                sendMessage(rule, elemObject, element);
+                sendMessage(rule, elementRules, element);
                 formIsValid = false;
             }
         };
@@ -299,4 +443,3 @@ export const validate = {
 
 window.validate = validate;
 window.message = defaultMessages;
-

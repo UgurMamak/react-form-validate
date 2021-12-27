@@ -4,6 +4,7 @@ import axios from "axios";
 import {validate} from "../helpers/validate";
 
 class PrimaryForm extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -21,176 +22,201 @@ class PrimaryForm extends Component {
                 password3: null
             },
             validate: {
-                email: {
-
-                    rules: {
+                rules: {
+                    email: {
                         email: true,
                         required: true
                     },
-                    messages: {
-                        required: 'email boş bırakılamaz',
-                        email: 'geçersiz email adresi {0}'
-                    },
-                },
-                email2: {
-                    rules: {
+                    email2: {
+
                         email: true,
                         required: true
-                    }
-                },
-                password: {
 
-                    rules: {
+                    },
+                    password: {
+
+
                         required: true,
                         maxLength: 8
+
+
                     },
-                    messages: {
-                        required: 'password boş bırakılamaz'
-                    }
-                },
-                password2: {
-                    rules: {
+                    password2: {
+
                         equalTo: 'password',
                         minLength: 2,
                         required: true
-                    },
-                    messages: {
-                        minLength: 'minimum {0} karakter girebilirsiniz'
-                    }
-                },
-                citySelect: {
 
-                    rules: {
-                        required: true
-                    },
-                    messages: {
-                        required: 'şehir boş bırakılamaz'
-                    }
-                },
-                checkbox2: {
 
-                    rules: {
-                        required: true
                     },
-                    messages: {
-                        required: "checkbox2 boş bırakılamaz"
-                    }
-                },
-                checkbox1: {
-                    rules: {
+                    citySelect: {
+
+
                         required: true
-                    }
-                },
-                count: {
-                    rules: {
+
+                    },
+                    checkbox2: {
+
+
+                        required: true
+
+                    },
+                    checkbox1: {
+
+                        required: true
+
+                    },
+                    count: {
+
                         isNumber: true
-                    }
-                },
-                formHorizontalRadios: {
-                    rules: {
-                        required: true
-                    }
-                },
-                rangeElement: {
 
-                    rules: {
+                    },
+                    formHorizontalRadios: {
+
+                        required: true
+
+                    },
+                    rangeElement: {
+
+
                         required: true,
                         rangeLength: [3, 8]
-                    }
-                },
-                password3: {
-                    rules: {
+
+                    },
+                    password3: {
+
                         passwordRegex: true,
                         required: true
+
                     }
-                }
+                },
+                messages: {
+                    email: {
+
+
+                        required: 'email boş bırakılamaz',
+                        email: 'geçersiz email adresi {0}'
+
+                    },
+                    email2: {},
+                    password: {
+
+                        required: 'password boş bırakılamaz'
+
+                    },
+                    password2: {
+
+
+                        minLength: 'minimum {0} karakter girebilirsiniz'
+
+                    },
+                    citySelect: {
+
+
+                        required: 'şehir boş bırakılamaz'
+
+                    },
+                    checkbox2: {
+
+
+                        required: "checkbox2 boş bırakılamaz"
+
+                    },
+                    checkbox1: {},
+                    count: {},
+                    formHorizontalRadios: {},
+                    rangeElement: {
+                        rangeLength: "{0} ile {1} arası değer giriniz"
+                    },
+                    password3: {}
+                },
+                error: {},
+                lang: 'en'
             }
-            /*validate: {
-                email: {
-                    value: null,
-                    rules: {
-                        email: true,
-                        required: true
-                    },
-                    messages: {
-                        required: 'email boş bırakılamaz',
-                        email: 'geçersiz email adresi {0}'
-                    },
-                },
-                email2: {
-                    rules: {
-                        email: true,
-                        required: true
-                    }
-                },
-                password: {
-                    value: null,
-                    rules: {
-                        required: true,
-                        maxLength: 8
-                    },
-                    messages: {
-                        required: 'password boş bırakılamaz'
-                    }
-                },
-                password2: {
-                    rules: {
-                        equalTo: 'password',
-                        minLength: 2,
-                        required:true
-                    },
-                    messages: {
-                        minLength: 'minimum {0} karakter girebilirsiniz'
-                    }
-                },
-                citySelect: {
-                    value: '',
-                    rules: {
-                        required: true
-                    },
-                    messages: {
-                        required: 'şehir boş bırakılamaz'
-                    }
-                },
-                checkbox2: {
-                    value: null,
-                    rules: {
-                        required: true
-                    },
-                    messages: {
-                        required: "checkbox2 boş bırakılamaz"
-                    }
-                },
-                checkbox1: {
-                    value: null,
-                    rules: {
-                        required: true
-                    }
-                },
-                count: {
-                    rules: {
-                        isNumber: true
-                    }
-                },
-                formHorizontalRadios: {
-                    rules: {
-                        required: true
-                    }
-                },
-                rangeElement: {
-                    value: null,
-                    rules: {
-                        required: true,
-                        rangeLength: [3, 8]
-                    }
-                },
-                password3: {
-                    rules: {
-                        passwordRegex: true,
-                        required: true
-                    }
-                }
-            }*/
+            /*  validate: {
+                  email: {
+                      rules: {
+                          email: true,
+                          required: true
+                      },
+                      messages: {
+                          required: 'email boş bırakılamaz',
+                          email: 'geçersiz email adresi {0}'
+                      },
+                  },
+                  email2: {
+                      rules: {
+                          email: true,
+                          required: true
+                      }
+                  },
+                  password: {
+
+                      rules: {
+                          required: true,
+                          maxLength: 8
+                      },
+                      messages: {
+                          required: 'password boş bırakılamaz'
+                      }
+                  },
+                  password2: {
+                      rules: {
+                          equalTo: 'password',
+                          minLength: 2,
+                          required: true
+                      },
+                      messages: {
+                          minLength: 'minimum {0} karakter girebilirsiniz'
+                      }
+                  },
+                  citySelect: {
+
+                      rules: {
+                          required: true
+                      },
+                      messages: {
+                          required: 'şehir boş bırakılamaz'
+                      }
+                  },
+                  checkbox2: {
+
+                      rules: {
+                          required: true
+                      },
+                      messages: {
+                          required: "checkbox2 boş bırakılamaz"
+                      }
+                  },
+                  checkbox1: {
+                      rules: {
+                          required: true
+                      }
+                  },
+                  count: {
+                      rules: {
+                          isNumber: true
+                      }
+                  },
+                  formHorizontalRadios: {
+                      rules: {
+                          required: true
+                      }
+                  },
+                  rangeElement: {
+
+                      rules: {
+                          required: true,
+                          rangeLength: [3, 8]
+                      }
+                  },
+                  password3: {
+                      rules: {
+                          passwordRegex: true,
+                          required: true
+                      }
+                  }
+              }*/
 
         }
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -235,15 +261,18 @@ class PrimaryForm extends Component {
             validate: validateObject
         });
 
+        console.log("validateObject=", validateObject);
+
         if (formIsValid) {
             Object.keys(this.state.form2).forEach(formItem => {
-                data[formItem] = this.state.form2[formItem]["value"]
+                data[formItem] = this.state.form2[formItem]
             });
 
             axios.post("https://jsonplaceholder.typicode.com/posts/1/comments", data).then(response => {
                 console.log(response)
             });
         }
+
     }
 
     handleSubmit2(event2) {
@@ -268,7 +297,7 @@ class PrimaryForm extends Component {
                             <Form.Control type="text" className={'required'} data-msg-required="boş bırakmayınız."
                                           onChange={(e) => this.handleChange(e)}
                                           name="email" placeholder="Enter email"/>
-                            <span style={{color: "red"}}>{this.state.validate.email.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.email}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="formGridEmail2">
@@ -276,35 +305,35 @@ class PrimaryForm extends Component {
                             <Form.Control type="text" className={'required'} data-msg-required="boş bırakmayınız."
                                           onChange={(e) => this.handleChange(e)}
                                           name="email2" placeholder="Enter email"/>
-                            <span style={{color: "red"}}>{this.state.validate.email2.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.email2}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="formGridPassword">
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" name="password" onChange={(e) => this.handleChange(e)}
                                           placeholder="Password"/>
-                            <span style={{color: "red"}}>{this.state.validate.password.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.password}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="formGridPassword2">
                             <Form.Label>Password</Form.Label>
                             <Form.Control type="password" name="password2" onChange={(e) => this.handleChange(e)}
                                           placeholder="Password2"/>
-                            <span style={{color: "red"}}>{this.state.validate.password2.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.password2}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="formGridPassword3">
                             <Form.Label>Password3 (custom validate)</Form.Label>
                             <Form.Control type="password" name="password3" onChange={(e) => this.handleChange(e)}
                                           placeholder="Password3"/>
-                            <span style={{color: "red"}}>{this.state.validate.password3.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.password3}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="rangeElement">
                             <Form.Label>range example</Form.Label>
                             <Form.Control name="rangeElement"
                                           onChange={(e) => this.handleChange(e)} placeholder=""/>
-                            <span style={{color: "red"}}>{this.state.validate.rangeElement.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.rangeElement}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="formGridAddress1">
@@ -319,8 +348,8 @@ class PrimaryForm extends Component {
                             })}
                                           onChange={(e) => this.handleChange(e)} placeholder="1234 Main St"/>
                             {
-                                this.state.validate.hasOwnProperty("address1") ?
-                                    <span style={{color: "red"}}>{this.state.validate.address1.error}</span> : ''
+                                this.state.validate.rules.hasOwnProperty("address1") ?
+                                    <span style={{color: "red"}}>{this.state.validate.error.address1}</span> : ''
                             }
 
                         </Form.Group>
@@ -335,7 +364,7 @@ class PrimaryForm extends Component {
                                     required: "test2"
                                 }
                             })} placeholder="Apartment, studio, or floor"/>
-                            {/* <span style={{color: "red"}}>{this.state.errors["address2"]}</span>*/}
+                            {/*       <span style={{color: "red"}}>{this.state.errors["address2"]}</span>*/}
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="formGridCity">
@@ -352,7 +381,7 @@ class PrimaryForm extends Component {
                                 <option value="2">Two</option>
                                 <option value="3">Three</option>
                             </Form.Select>
-                            <span style={{color: "red"}}>{this.state.validate.citySelect.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.citySelect}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} controlId="formGridZip">
@@ -364,20 +393,20 @@ class PrimaryForm extends Component {
                             <Form.Label>Adet</Form.Label>
                             <Form.Control name="count" onChange={(e) => this.handleChange(e)}
                                           placeholder="Adet giriniz."/>
-                            <span style={{color: "red"}}>{this.state.validate.count.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.count}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} id="formGridCheckbox1">
                             <Form.Check type="checkbox" name="checkbox1" onChange={(e) => this.handleChange(e)}
                                         label="checkbox1"/>
-                            <span style={{color: "red"}}>{this.state.validate.checkbox1.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.checkbox1}</span>
                         </Form.Group>
 
                         <Form.Group as={Col} md={3} id="formGridCheckbox2">
                             <Form.Check type="checkbox" name="checkbox2" onChange={(e) => {
                                 this.handleChange(e)
                             }} label="checkbox2"/>
-                            <span style={{color: "red"}}>{this.state.validate.checkbox2.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.checkbox2}</span>
                         </Form.Group>
 
                         <Form.Group as={Row} className="mb-3">
@@ -408,7 +437,7 @@ class PrimaryForm extends Component {
                                     onChange={(e) => this.handleChange(e)}
                                 />
                             </Col>
-                            <span style={{color: "red"}}>{this.state.validate.formHorizontalRadios.error}</span>
+                            <span style={{color: "red"}}>{this.state.validate.error.formHorizontalRadios}</span>
                         </Form.Group>
 
                         <Button variant="primary" type="submit">

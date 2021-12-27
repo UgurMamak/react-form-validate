@@ -1,3 +1,4 @@
-export const isNumber = (value) => {
+const isNumber = (value) => {
     return isNaN(value) ? false : true;
 }
+export default isNumber;
