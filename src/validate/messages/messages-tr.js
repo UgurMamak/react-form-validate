@@ -1,4 +1,4 @@
-export default {
+export const messagesTr= {
     required: "Bu alan gereklidir",
     isNumber: "Lütfen geçerli bir numara girin.",
     email: "Lütfen geçerli bir e-posta girin.",

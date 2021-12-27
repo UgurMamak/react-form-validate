@@ -1,4 +1,4 @@
-export default {
+export const messagesEn= {
     required: "This field is required.",
     isNumber: "Please enter a valid number.",
     email: "Please enter a valid email address.",

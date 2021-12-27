@@ -1,4 +1,4 @@
-import defaultMessages from "../validate/messages/messages-en"
+import {messages} from "../validate/messages/index";
 import validateEmail from "../validate/rules/email";
 import validateRequired from "../validate/rules/required";
 import maxLength from "../validate/rules/maxLength";
@@ -7,7 +7,10 @@ import isNumber from "../validate/rules/isNumber";
 import rangeLength from "../validate/rules/rangeLength";
 import minLength from "../validate/rules/minLength";
 
-let formIsValid = true, validateObject = {}, formData = {};
+let formIsValid = true, validateObject = {}, formData = {}
+,defaultMessages=messages('en');
+
+
 
 String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
     function () {
@@ -84,7 +87,6 @@ String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
         };
     }
 };*/
-
 
 const sendMessage = (rule, elementRules, elementName) => {
     if (validateObject.messages) {
@@ -173,6 +175,8 @@ export const validate = {
         validateObject = validateObj;
         formData = formData;
 
+        defaultMessages=messages(validateObject.lang);
+
         Object.keys(validateObj.rules).forEach(elementName => {
             var elementRules = validateObject.rules[elementName],
                 elementValue = formData[elementName];
@@ -192,6 +196,7 @@ export const validate = {
     },
 
     addMethod: function (name, method, message) {
+        console.log(defaultMessages);
         defaultMessages[name] = message
         this.addRule(name, method);
     },
