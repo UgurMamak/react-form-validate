@@ -269,7 +269,6 @@ class PrimaryForm extends Component {
         var name = event.target.name,
             value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 
-
         this.setState(prevState => ({
             form: {
                 ...prevState.form,
@@ -280,7 +279,6 @@ class PrimaryForm extends Component {
                 [name]: value
             }
         }));
-
 
         /* this.setState(prevState => ({
              form2: {

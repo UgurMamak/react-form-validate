@@ -113,6 +113,25 @@ export const validate = {
         }
     },
 
+    singleValid:function(validateObj,elementName,elementValue){
+        validateObject = validateObj;
+        console.log(elementName,validateObj.rules[elementName],validateObj.messages[elementName],elementValue);
+
+        if(validateObject.error){
+            validateObject.error[elementName] =''
+        }
+
+        Object.keys(validateObj.rules[elementName]).forEach(rule => {
+            if (this.methods.hasOwnProperty(rule)) {
+                this.methods[rule](elementValue, validateObj.rules[elementName], elementName);
+            }
+        });
+
+        return {
+            formIsValid, validateObject
+        }
+    },
+
     valid: function (validateObj, formDataObj) {
         formIsValid = true;
         validateObject = validateObj;
