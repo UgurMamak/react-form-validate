@@ -113,10 +113,8 @@ export const validate = {
         }
     },
 
-
     init: function (validateObj) {
         validateObject = validateObj;
-
     },
 
     singleValid: function (validateObj, elementName, elementValue) {
