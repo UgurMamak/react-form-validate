@@ -22,6 +22,7 @@ class SecondaryForm extends Component {
                 password3: null
             },
             validate: {
+                name:'secondaryForm',
                 rules: {
                     email: {
                         email: true,
@@ -241,8 +242,8 @@ class SecondaryForm extends Component {
     render() {
         return (
             <div>
-                <Container>
-                    <Form onSubmit={this.handleSubmit}>
+                <Container data-validate-name={this.state.validate.name} data-validate-wrap="true">
+                    <Form onSubmit={this.handleSubmit} >
                         <Row className="mb-3 mt-3">
                             <Form.Group as={Col} md={3} controlId="formGridEmail">
                                 <Form.Label>Email</Form.Label>

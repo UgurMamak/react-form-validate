@@ -113,12 +113,19 @@ export const validate = {
         }
     },
 
-    singleValid:function(validateObj,elementName,elementValue){
-        validateObject = validateObj;
-        console.log(elementName,validateObj.rules[elementName],validateObj.messages[elementName],elementValue);
 
-        if(validateObject.error){
-            validateObject.error[elementName] =''
+    init: function (validateObj) {
+        validateObject = validateObj;
+
+    },
+
+    singleValid: function (validateObj, elementName, elementValue) {
+        this.init(validateObj);
+
+        console.log(elementName, validateObj.rules[elementName], validateObj.messages[elementName], elementValue);
+
+        if (validateObject.error) {
+            validateObject.error[elementName] = ''
         }
 
         Object.keys(validateObj.rules[elementName]).forEach(rule => {
@@ -134,9 +141,8 @@ export const validate = {
 
     valid: function (validateObj, formDataObj) {
         formIsValid = true;
-        validateObject = validateObj;
+        this.init(validateObj);
         formData = formDataObj;
-
         defaultMessages = messages(validateObject.lang);
 
         defaultMessages = {
@@ -149,11 +155,16 @@ export const validate = {
                 elementValue = formData[elementName];
             validateObject.error[elementName] = '';
 
-            Object.keys(elementRules).forEach(rule => {
-                if (this.methods.hasOwnProperty(rule)) {
-                    this.methods[rule](elementValue, elementRules, elementName);
-                }
-            });
+            var validateCont = document.querySelector('[data-validate-name="' + validateObj.name + '"] [name="' + elementName + '"] '),
+                parentElement = validateCont.closest('[data-validate-wrap]');
+
+            if (parentElement.getAttribute('data-validate-wrap') && window.getComputedStyle(parentElement).display !== "none") {
+                Object.keys(elementRules).forEach(rule => {
+                    if (this.methods.hasOwnProperty(rule)) {
+                        this.methods[rule](elementValue, elementRules, elementName);
+                    }
+                });
+            }
 
         });
 
